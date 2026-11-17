@@ -26,7 +26,6 @@ export class AddressService {
         private userRepository: Repository<User>
     ) {}
 
-    // GET ADDRESSES (FOR CUSTOMER: OWN ADDRESSES; FOR SUPER ADMIN: ALL OR USER SPECIFIC)
     async getAddresses(userId?: string, includeUser = false) {
         if (userId) {
             return await this.addressRepository.find({
@@ -42,7 +41,6 @@ export class AddressService {
         });
     }
 
-    // GET ADDRESSES BY USER
     async getUserAddresses(user_id: string) {
         const user = await this.userRepository.findOneBy({
             id: user_id
@@ -58,7 +56,6 @@ export class AddressService {
         });
     }
 
-    // GET SINGLE ADDRESS WITH OWNERSHIP CHECK
     async getAddress(id: string, userId?: string, isSuperAdmin = false, includeUser = false) {
         const address = await this.addressRepository.findOne({
             where: { id },
@@ -76,7 +73,6 @@ export class AddressService {
         return address;
     }
 
-    // CREATE ADDRESS (FORCES AUTHENTICATED USER ID)
     async createAddress(userId: string, data: CreateAddressDto) {
         const user = await this.userRepository.findOneBy({
             id: userId
@@ -107,7 +103,6 @@ export class AddressService {
         };
     }
 
-    // UPDATE ADDRESS WITH OWNERSHIP CHECK
     async updateAddress(id: string, data: UpdateAddressDto, userId?: string, isSuperAdmin = false) {
         const address = await this.addressRepository.findOneBy({ id });
 
@@ -119,7 +114,6 @@ export class AddressService {
             throw new ForbiddenException("You do not have permission to update this address");
         }
 
-        // Prevent tampering with user_id
         const { user_id, ...updateData } = data as any;
 
         if (updateData.is_default === true) {
@@ -144,7 +138,6 @@ export class AddressService {
         };
     }
 
-    // DELETE ADDRESS WITH OWNERSHIP CHECK
     async deleteAddress(id: string, userId?: string, isSuperAdmin = false) {
         const address = await this.addressRepository.findOneBy({ id });
 

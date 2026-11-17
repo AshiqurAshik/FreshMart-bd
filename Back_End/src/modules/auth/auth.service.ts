@@ -22,7 +22,6 @@ export class AuthService {
         private jwt: JwtService,
     ) {}
 
-    // LOGIN
     async signIn(dto: AuthDto) {
 
         const user = await this.checkUserByEmail(
@@ -52,7 +51,6 @@ export class AuthService {
 
         const tokens = await this.signTokens(user);
 
-        // Store hashed refresh token in database for revocation & rotation
         await this.userService.setCurrentRefreshToken(user.id, tokens.refresh_token);
 
         return {
@@ -81,7 +79,6 @@ export class AuthService {
 
     }
 
-    // CHECK USER BY EMAIL
     async checkUserByEmail(
         email: string
     ): Promise<User> {
@@ -101,7 +98,6 @@ export class AuthService {
 
     }
 
-    // VALIDATE PASSWORD
     async validateUser(
         user: User,
         password: string
@@ -124,7 +120,6 @@ export class AuthService {
 
     }
 
-    // GENERATE ACCESS AND REFRESH TOKENS
     async signTokens(user: User) {
 
         const accessPayload = {
@@ -181,7 +176,6 @@ export class AuthService {
 
     }
 
-    // REFRESH ACCESS TOKEN (WITH ROTATION AND REVOCATION CHECK)
     async refreshToken(refreshToken: string) {
 
         if (!refreshToken) {
@@ -203,7 +197,6 @@ export class AuthService {
                 }
             );
 
-            // Verify that token has not been revoked or invalidated
             const user = await this.userService.getUserIfRefreshTokenMatches(
                 payload.user_id,
                 refreshToken
@@ -233,10 +226,8 @@ export class AuthService {
 
             }
 
-            // Issue new rotated tokens
             const tokens = await this.signTokens(user);
 
-            // Rotate stored refresh token hash in database
             await this.userService.setCurrentRefreshToken(user.id, tokens.refresh_token);
 
             return {
@@ -277,7 +268,6 @@ export class AuthService {
 
     }
 
-    // LOGOUT (REVOKES STORED REFRESH TOKEN)
     async logout(userId?: string, refreshToken?: string) {
 
         if (userId) {
@@ -302,8 +292,6 @@ export class AuthService {
                 }
 
             } catch {
-
-                // Token couldn't be decoded, still proceed with logout
 
             }
 

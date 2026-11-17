@@ -33,7 +33,6 @@ export class AuthController {
         private authService: AuthService
     ) {}
 
-    // LOGIN
     @HttpCode(HttpStatus.OK)
     @Post("login")
     async login(
@@ -47,7 +46,6 @@ export class AuthController {
 
         const result = await this.authService.signIn(dto);
 
-        // Store access and refresh tokens in HTTP-only cookies
         setAuthCookies(res, {
             access_token: result.access_token,
             refresh_token: result.refresh_token,
@@ -57,7 +55,6 @@ export class AuthController {
 
     }
 
-    // REFRESH TOKEN
     @HttpCode(HttpStatus.OK)
     @Post("refresh")
     async refresh(
@@ -70,8 +67,6 @@ export class AuthController {
         dto?: RefreshTokenDto,
     ) {
 
-        // Priority 1: HTTP-only cookie
-        // Priority 2: Request body fallback
         const refreshToken =
             req.cookies?.[AUTH_COOKIE_NAMES.REFRESH_TOKEN] ||
             req.cookies?.refreshToken ||
@@ -81,7 +76,6 @@ export class AuthController {
             refreshToken
         );
 
-        // Update cookies with rotated tokens
         setAuthCookies(res, {
             access_token: result.access_token,
             refresh_token: result.refresh_token,
@@ -91,7 +85,6 @@ export class AuthController {
 
     }
 
-    // LOGOUT
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
     @Post("logout")
@@ -111,13 +104,11 @@ export class AuthController {
             req.cookies?.refreshToken ||
             dto?.refresh_token;
 
-        // Invalidate / revoke stored refresh token in database
         const result = await this.authService.logout(
             userId,
             refreshToken
         );
 
-        // Clear access-token and refresh-token cookies with exact matching options
         clearAuthCookies(res);
 
         return result;

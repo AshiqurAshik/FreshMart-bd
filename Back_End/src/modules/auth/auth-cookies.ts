@@ -15,9 +15,6 @@ export interface AuthCookieConfig {
 export function getAuthCookieOptions(): AuthCookieConfig {
     const isProduction = process.env.NODE_ENV === "production";
 
-    // In production with cross-origin deployments (e.g. backend and frontend on different domains),
-    // sameSite must be 'none' and secure must be true.
-    // In local development (HTTP), sameSite: 'lax' and secure: false allow Postman and local browsers to work seamlessly.
     const sameSite: CookieOptions["sameSite"] = isProduction ? "none" : "lax";
     const secure: boolean = isProduction;
 
@@ -31,11 +28,11 @@ export function getAuthCookieOptions(): AuthCookieConfig {
     return {
         access: {
             ...baseOptions,
-            maxAge: 15 * 60 * 1000, // 15 minutes (matches 15m in JWT)
+            maxAge: 15 * 60 * 1000,
         },
         refresh: {
             ...baseOptions,
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days (matches 7d in JWT)
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         },
         clearAccess: {
             ...baseOptions,

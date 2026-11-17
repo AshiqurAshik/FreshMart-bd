@@ -28,7 +28,6 @@ export class RolesGuard implements CanActivate {
                 ]
             );
 
-        // Default-deny approach: if RolesGuard is applied to a route, explicit roles are required
         if (!requiredRoles || requiredRoles.length === 0) {
             throw new ForbiddenException("Access denied: No role permitted for this resource");
         }

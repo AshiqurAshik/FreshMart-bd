@@ -23,14 +23,12 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
 
-  // GET OWN CART
   @Get()
   async getMyCart(@Req() req: any) {
     const userId = req.user.user_id;
     return await this.cartsService.getCart(userId);
   }
 
-  // GET CART BY USER ID (WITH OWNERSHIP CHECK)
   @Get(":userId")
   async getCart(@Req() req: any, @Param("userId") userId: string) {
     if (req.user.role === "customer" && req.user.user_id !== userId) {
@@ -39,7 +37,6 @@ export class CartsController {
     return await this.cartsService.getCart(userId);
   }
 
-  // ADD TO OWN CART (NEVER TRUST USER_ID FROM BODY)
   @Post()
   async addToCart(
     @Req() req: any,
@@ -49,7 +46,6 @@ export class CartsController {
     return await this.cartsService.addToCart(userId, dto);
   }
 
-  // UPDATE CART ITEM (OWN CART)
   @Patch(":userId/:id")
   async updateCartItemWithUser(
     @Req() req: any,
@@ -64,7 +60,6 @@ export class CartsController {
     return await this.cartsService.updateCartItem(targetUserId, id, dto);
   }
 
-  // UPDATE CART ITEM DIRECTLY
   @Patch(":id")
   async updateCartItem(
     @Req() req: any,
@@ -75,7 +70,6 @@ export class CartsController {
     return await this.cartsService.updateCartItem(userId, id, dto);
   }
 
-  // REMOVE CART ITEM (WITH USER ID IN PATH)
   @Delete(":userId/:id")
   async removeCartItemWithUser(
     @Req() req: any,
@@ -89,7 +83,6 @@ export class CartsController {
     return await this.cartsService.removeCartItem(targetUserId, id);
   }
 
-  // REMOVE CART ITEM DIRECTLY
   @Delete("item/:id")
   async removeCartItem(
     @Req() req: any,
@@ -99,7 +92,6 @@ export class CartsController {
     return await this.cartsService.removeCartItem(userId, id);
   }
 
-  // CLEAR CART (WITH USER ID IN PATH)
   @Delete(":userId")
   async clearCartWithUser(
     @Req() req: any,
@@ -112,7 +104,6 @@ export class CartsController {
     return await this.cartsService.clearCart(targetUserId);
   }
 
-  // CLEAR OWN CART
   @Delete()
   async clearCart(@Req() req: any) {
     const userId = req.user.user_id;

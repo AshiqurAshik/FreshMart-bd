@@ -31,7 +31,6 @@ export class AddressController {
         private addressService: AddressService
     ) {}
 
-    // GET ADDRESSES (FOR CUSTOMER: OWN; FOR SUPER ADMIN: ALL OR FILTERED)
     @Get()
     getAddresses(@Req() req: any, @Query("include_user") includeUser?: string) {
         const shouldInclude = includeUser === "true" || includeUser === "1";
@@ -41,7 +40,6 @@ export class AddressController {
         return this.addressService.getAddresses(userId, isSuperAdmin ? shouldInclude : false);
     }
 
-    // GET ADDRESSES BY USER (WITH OWNERSHIP CHECK)
     @Get("user/:userId")
     getUserAddresses(@Req() req: any, @Param("userId") userId: string) {
         if (req.user.role === "customer" && req.user.user_id !== userId) {
@@ -51,7 +49,6 @@ export class AddressController {
         return this.addressService.getUserAddresses(userId);
     }
 
-    // GET SINGLE ADDRESS (WITH OWNERSHIP CHECK)
     @Get(":id")
     getAddress(
         @Req() req: any,
@@ -69,7 +66,6 @@ export class AddressController {
         );
     }
 
-    // CREATE ADDRESS (FORCES AUTHENTICATED USER IDENTITY)
     @Post()
     createAddress(
         @Req() req: any,
@@ -79,7 +75,6 @@ export class AddressController {
         return this.addressService.createAddress(userId, data);
     }
 
-    // UPDATE ADDRESS (WITH OWNERSHIP CHECK)
     @Patch(":id")
     updateAddress(
         @Req() req: any,
@@ -90,7 +85,6 @@ export class AddressController {
         return this.addressService.updateAddress(id, data, req.user.user_id, isSuperAdmin);
     }
 
-    // DELETE ADDRESS (WITH OWNERSHIP CHECK)
     @Delete(":id")
     deleteAddress(
         @Req() req: any,

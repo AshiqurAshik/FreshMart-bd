@@ -10,11 +10,6 @@ import { appConfig } from "@/src/config";
 import { UserService } from "../../user/user.service";
 import { AUTH_COOKIE_NAMES } from "../auth-cookies";
 
-/**
- * Extracts JWT access token from incoming request.
- * Priority 1: HTTP-only cookie ('access_token' or 'accessToken')
- * Returns null if not found in cookies, falling through to Bearer header.
- */
 const cookieExtractor = (req: Request): string | null => {
     if (!req) {
         return null;
