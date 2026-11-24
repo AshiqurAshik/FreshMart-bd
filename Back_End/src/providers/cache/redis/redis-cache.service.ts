@@ -1,4 +1,4 @@
-import { appConfig } from "@/src/config";
+import { appConfig } from "../../../config";
 import {
   Injectable,
   Logger,
@@ -32,7 +32,11 @@ export class RedisCacheService implements OnModuleInit, OnModuleDestroy {
     this.redisClient.on("end", () =>
       this.logger.log("Redis client disconnected"),
     );
-    await this.redisClient.connect();
+    try {
+      await this.redisClient.connect();
+    } catch (err) {
+      this.logger.warn(`Could not connect to Redis: ${err}`);
+    }
   }
 
   getClient() {

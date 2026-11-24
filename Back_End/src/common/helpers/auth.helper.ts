@@ -1,5 +1,5 @@
-import { IRequest } from "@/common/interfaces/request.interface";
-import { AuthUser } from "@/common/interfaces/auth-user.interface";
+import { IRequest } from "../interfaces/request.interface";
+import { AuthUser } from "../interfaces/auth-user.interface";
 
 export const getCurrentUser = (req: IRequest) => {
   if (!req.user) return "You are not authenticated";

@@ -1,5 +1,5 @@
-import { getCurrentUser } from "@/common/helpers/auth.helper";
-import { IRequest } from "@/common/interfaces/request.interface";
+import { getCurrentUser } from "../helpers/auth.helper";
+import { IRequest } from "../interfaces/request.interface";
 import {
   createParamDecorator,
   ExecutionContext,

@@ -1,4 +1,4 @@
-import { InMemoryCacheService } from "@/providers/cache/in-memory/in-memory-cache.service";
+import { InMemoryCacheService } from "./in-memory-cache.service";
 import { Global, Module } from "@nestjs/common";
 
 @Global()

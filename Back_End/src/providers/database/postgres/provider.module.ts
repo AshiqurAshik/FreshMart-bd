@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { dataSourceOptions } from "@/config/.";
+import { dataSourceOptions } from "../../../config";
 
 /*
  * Import and provide base typeorm (postgres) related classes.
@@ -8,6 +8,11 @@ import { dataSourceOptions } from "@/config/.";
  * @module
  */
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions)],
+  imports: [
+    TypeOrmModule.forRoot({
+      ...dataSourceOptions,
+      autoLoadEntities: true,
+    }),
+  ],
 })
 export class PostgresDatabaseProviderModule {}

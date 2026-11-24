@@ -1,21 +1,23 @@
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { AppModule } from "@/src/app.module";
+import { AppModule } from "./app.module";
 import * as dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { join } from "path";
+import { existsSync } from "fs";
 
 dotenv.config();
 
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  app.useStaticAssets(join(process.cwd(), "uploads"), {
-    prefix: "/uploads/",
-  });
+export function setupApp(app: NestExpressApplication) {
+  const uploadsDir = join(process.cwd(), "uploads");
+  if (existsSync(uploadsDir)) {
+    app.useStaticAssets(uploadsDir, {
+      prefix: "/uploads/",
+    });
+  }
 
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.set("trust proxy", true);
@@ -25,14 +27,22 @@ async function bootstrap() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          // Swagger UI needs 'unsafe-inline' to function correctly
-          scriptSrc: ["'self'", "'unsafe-inline'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:", "validator.swagger.io"], // Allow Swagger images
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com",
+          ],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com",
+            "https://fonts.googleapis.com",
+          ],
+          fontSrc: ["'self'", "https://fonts.gstatic.com"],
+          imgSrc: ["'self'", "data:", "validator.swagger.io", "https:"],
           connectSrc: ["'self'"],
         },
       },
-      // This policy can block Swagger assets, so we disable it for now
       crossOriginEmbedderPolicy: false,
     }),
   );
@@ -51,7 +61,14 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+  SwaggerModule.setup("api", app, document, {
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css",
+    customJs: [
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.js",
+    ],
+  });
 
   // 3. Cookie Parser
   const cookieSecret =
@@ -79,7 +96,17 @@ async function bootstrap() {
     ],
     maxAge: 86400,
   });
-
-  await app.listen(parseInt(process.env.PORT as string));
 }
-bootstrap();
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  setupApp(app);
+  const port = parseInt(process.env.PORT || "5001", 10);
+  await app.listen(port);
+  console.log(`FreshMartBD backend is running on http://localhost:${port}`);
+}
+
+// Only launch traditional HTTP listener when executed directly and not in Vercel serverless environment
+if (require.main === module && !process.env.VERCEL) {
+  bootstrap();
+}

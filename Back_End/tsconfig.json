@@ -32,6 +32,6 @@
       "@/dweb3Modules/*": ["./src/web3Modules/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "api"],
   "exclude": ["node_modules", "dist"]
 }

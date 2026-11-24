@@ -7,7 +7,7 @@ import {
 import {
   makeFindOneOption,
   makeFindOption,
-} from "@/common/helpers/requestParser";
+} from "../helpers/requestParser";
 
 @Injectable()
 export class QueryParserPipe implements PipeTransform {

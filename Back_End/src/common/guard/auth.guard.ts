@@ -1,6 +1,6 @@
-import { IRequest } from "@/common/interfaces/request.interface";
+import { IRequest } from "../interfaces/request.interface";
 
-import { RedisCacheService } from "@/src/providers/cache/redis/redis-cache.service";
+import { RedisCacheService } from "../../providers/cache/redis/redis-cache.service";
 import {
   CanActivate,
   ExecutionContext,

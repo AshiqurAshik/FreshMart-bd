@@ -77,19 +77,27 @@ export class SnakeNamingStrategy
 
 export const dataSourceOptions: DataSourceOptions = {
   type: "postgres",
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : undefined,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  ...(process.env.DATABASE_URL || process.env.POSTGRES_URL
+    ? { url: process.env.DATABASE_URL || process.env.POSTGRES_URL }
+    : {
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+      }),
   schema: "public",
   entities: [__dirname + "/../modules/**/entities/*.entity.{ts,js}"],
   namingStrategy: new SnakeNamingStrategy(),
-  migrations: [__dirname + "/../database/migrations/*.ts"],
+  migrations: [__dirname + "/../database/migrations/*.{ts,js}"],
+  ssl:
+    process.env.DB_SSL === "true" ||
+    process.env.DATABASE_SSL === "true" ||
+    (process.env.NODE_ENV === "production" && process.env.DB_SSL !== "false")
+      ? { rejectUnauthorized: false }
+      : undefined,
   logging: process.env.NODE_DB_ENV
-    ? process.env.NODE_DB_ENV == "development"
-      ? false
-      : false
+    ? process.env.NODE_DB_ENV === "development"
     : false,
   synchronize: false,
 };

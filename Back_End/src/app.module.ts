@@ -1,10 +1,10 @@
 
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { PostgresDatabaseProviderModule } from "@/providers/database/postgres/provider.module";
-import { AppController } from "@/src/app.controller";
-import { AppService } from "@/src/app.service";
-import global_config from "@/config/global_config";
+import { PostgresDatabaseProviderModule } from "./providers/database/postgres/provider.module";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import global_config from "./config/global_config";
 import { BullModule } from "@nestjs/bull";
 import { TestModule } from "./modules/test/test.module";
 import { OrdersModule } from "./modules/orders/orders.module";
@@ -25,7 +25,12 @@ import { AuthModule } from "./modules/auth/auth.module";
     }),
 
     BullModule.forRoot({
-      url: process.env.REDIS_URL,
+      url: process.env.REDIS_URL || undefined,
+      redis: {
+        maxRetriesPerRequest: 1,
+        connectTimeout: 5000,
+        enableOfflineQueue: false,
+      },
     }),
 
     ConfigModule.forRoot({

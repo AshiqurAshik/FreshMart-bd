@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { Request } from "express";
 
-import { appConfig } from "@/src/config";
+import { appConfig } from "../../../config";
 import { UserService } from "../../user/user.service";
 import { AUTH_COOKIE_NAMES } from "../auth-cookies";
 

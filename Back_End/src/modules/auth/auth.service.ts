@@ -11,7 +11,7 @@ import { User } from "../user/entities/user.entity";
 
 import { AuthDto } from "./dto/auth.dto";
 
-import { appConfig } from "@/src/config";
+import { appConfig } from "../../config";
 
 @Injectable()
 export class AuthService {
