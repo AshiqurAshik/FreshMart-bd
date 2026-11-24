@@ -98,6 +98,31 @@ export function setupApp(app: NestExpressApplication) {
   });
 }
 
+// Cached serverless application instance for warm container reuse
+let cachedServer: any;
+
+export async function bootstrapServer(): Promise<any> {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  setupApp(app);
+  await app.init();
+  return app.getHttpAdapter().getInstance();
+}
+
+// Vercel serverless function default export
+export default async function handler(req: any, res: any) {
+  if (!cachedServer) {
+    cachedServer = await bootstrapServer();
+  }
+
+  // Preserve rewritten URL path in Vercel edge runtime
+  if (req.headers && req.headers["x-matched-path"]) {
+    req.url = req.headers["x-matched-path"];
+  }
+
+  return cachedServer(req, res);
+}
+
+// Traditional standalone HTTP listener for local development
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   setupApp(app);

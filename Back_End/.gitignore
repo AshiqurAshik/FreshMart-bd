@@ -403,3 +403,5 @@ dist
 .serverless/**/*.zip
 node_modules
 .vercel
+.neon
+*.backup

@@ -29,6 +29,8 @@
     "seeder:refresh:dev": "ts-node -r tsconfig-paths/register src/seeder --refresh"
   },
   "dependencies": {
+    "@neon/config": "^1.14.6",
+    "@neon/env": "^2.1.9",
     "@nest-lab/throttler-storage-redis": "^1.1.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bull": "^11.0.4",
