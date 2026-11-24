@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Nest TypeScript starter repository",
   "license": "MIT",
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -113,6 +114,9 @@
     "typescript": "^5.9.3"
   },
   "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt"
+    ],
     "overrides": {
       "form-data": ">=4.0.0",
       "tough-cookie": ">=4.1.3",
