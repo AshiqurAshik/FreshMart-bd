@@ -25,7 +25,7 @@ export class UserController {
 
     constructor(
         private userService: UserService
-    ) {}
+    ) { }
 
     // GET ALL USERS (SUPER ADMIN ONLY)
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -76,7 +76,7 @@ export class UserController {
         return this.userService.getUser(id, shouldInclude);
     }
 
-    // UPDATE USER (CUSTOMER CAN ONLY UPDATE OWN PROFILE; SUPER ADMIN CAN UPDATE USERS; ADMIN FORBIDDEN)
+    // UPDATE USER 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("customer", "super_admin")
     @Patch(":id")
